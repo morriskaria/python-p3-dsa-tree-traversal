@@ -1,48 +1,69 @@
+import sys
+import os
+
+# Add the parent directory to the path to import tree
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 from tree import Tree
 
-class TestStack:
-    '''Class Stack in Stack.py'''
-
-    def test_get_element_by_id(self):
-  # <body>
-  #   <div id="main">
-  #     <h1 id="heading">Title</h1>
-  #     <h2>Subtitle</h2>
-  #   </div>
-  # </body>
-
-        '''get_element_by_id test'''
-    tree = Tree(
-      {
+def test_get_element_by_id():
+    """Test the get_element_by_id method"""
+    
+    # Build test tree
+    root = Tree({
         'tag_name': 'body',
         'id': None,
-        'children': [
-          {
-            'tag_name': 'div',
-            'id': 'main',
-            'children': [
-              {
-                'tag_name': 'h1',
-                'id': 'heading',
-                'text_content': 'Title',
-                'children': []
-              },
-              {
-                'tag_name': 'h2',
-                'id': None,
-                'text_content': 'Subitle',
-                'children': []
-              }
-            ]
-          }
-        ]
-      }
-    )
-    assert(tree.get_element_by_id('heading') =={
-      'tag_name': 'h1',
-      'id': 'heading',
-      'text_content': 'Title',
-      'children': []
-    } )
+        'text_content': None
+    })
+    
+    heading = Tree({
+        'tag_name': 'h1',
+        'id': 'heading',
+        'text_content': 'Title'
+    })
+    
+    div = Tree({
+        'tag_name': 'div',
+        'id': 'container',
+        'text_content': None
+    })
+    
+    paragraph = Tree({
+        'tag_name': 'p',
+        'id': 'content',
+        'text_content': 'Some text'
+    })
+    
+    # Build the tree structure
+    root.add_child(heading)
+    root.add_child(div)
+    div.add_child(paragraph)
+    
+    # Test finding the heading
+    result = root.get_element_by_id('heading')
+    expected = {
+        'tag_name': 'h1',
+        'id': 'heading',
+        'text_content': 'Title'
+    }
+    
+    assert result == expected, f"Expected {expected}, but got {result}"
+    
+    # Test finding the paragraph
+    result = root.get_element_by_id('content')
+    expected = {
+        'tag_name': 'p',
+        'id': 'content',
+        'text_content': 'Some text'
+    }
+    
+    assert result == expected, f"Expected {expected}, but got {result}"
+    
+    # Test non-existent ID
+    result = root.get_element_by_id('nonexistent')
+    assert result is None, f"Expected None, but got {result}"
+    
+    print("All tests passed!")
 
-    assert(tree.get_element_by_id('nope') == None)
+if __name__ == "__main__":
+    test_get_element_by_id()
